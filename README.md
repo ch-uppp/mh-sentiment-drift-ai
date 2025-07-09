@@ -20,16 +20,5 @@ This repo is a step toward building that emotional intelligence layer: modular, 
 
 ### Testing and Evaluation
 
-Initial testing has been done on synthetic emotional narratives and anonymized mental health counselling sessions. We're developing a benchmark set for more rigorous evaluation of tone shift detection performance across domains.
+Initial testing has been done on synthetic emotional narratives and anonymized mental health counselling sessions. We're developing a benchmark set for more rigorous evaluation of tone shift detection performance across domain
 
-
-### Extending This Repo
-
-- Swap out the sentiment model via the `model_adapter` interface.
-- Customize drift detection logic (`detector.py`) for your own windowing strategy.
-- Add streaming support for real-time LLM applications.
-
-
-### Join Us
-
-This repo is a building block in creating emotionally adaptive AI systems that respond to human tone with care and context. If you're working on GenAI, mental health, or safety alignment, we’d love to collaborate.
