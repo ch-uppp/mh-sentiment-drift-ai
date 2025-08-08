@@ -1,1 +1,47 @@
-
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sentiment-drift
+  labels:
+    name: sentiment-drift
+    environment: production
+    app: sentiment-drift-tool
+---
+# Resource Quota for the namespace
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: sentiment-drift-quota
+  namespace: sentiment-drift
+spec:
+  hard:
+    requests.cpu: "4"
+    requests.memory: 8Gi
+    limits.cpu: "8"
+    limits.memory: 16Gi
+    persistentvolumeclaims: "5"
+    services: "10"
+    secrets: "10"
+    configmaps: "10"
+---
+# Network Policy for security
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: sentiment-drift-network-policy
+  namespace: sentiment-drift
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: sentiment-drift
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+  egress:
+  - {}
