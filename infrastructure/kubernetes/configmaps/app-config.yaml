@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: sentiment-drift
+  labels:
+    app: sentiment-drift
+    component: config
+data:
+  # Service URLs
+  SENTIMENT_SERVICE_URL: "http://sentiment-analysis-service:8001"
+  DRIFT_SERVICE_URL: "http://drift-detection-service:8002"
+  SESSION_SERVICE_URL: "http://session-management-service:8003"
+  ADAPTATION_SERVICE_URL: "http://response-adaptation-service:8004"
+  ANALYTICS_SERVICE_URL: "http://analytics-service:8005"
+  
+  # Database URLs
+  REDIS_URL: "redis://redis-service:6379/0"
+  
+  # API Configuration
+  API_V1_STR: "/api/v1"
+  ACCESS_TOKEN_EXPIRE_MINUTES: "30"
+  
+  # ML Model Configuration
+  MODEL_CACHE_DIR: "/app/models"
+  TRANSFORMER_MODEL: "cardiffnlp/twitter-roberta-base-sentiment-latest"
+  EMOTION_MODEL: "j-hartmann/emotion-english-distilroberta-base"
+  
+  # Performance Settings
+  MAX_CONCURRENT_REQUESTS: "100"
+  SENTIMENT_ANALYSIS_TIMEOUT: "5"
+  MAX_TEXT_LENGTH: "512"
+  BATCH_SIZE: "32"
+  
+  # Feature Flags
+  VADER_ENABLED: "true"
+  ENABLE_CACHING: "true"
+  CACHE_TTL_SECONDS: "300"
+  
+  # Logging
+  LOG_LEVEL: "INFO"
+  
+  # Monitoring
+  ENABLE_METRICS: "true"
+  METRICS_PORT: "9090"
