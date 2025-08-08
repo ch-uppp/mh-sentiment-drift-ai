@@ -21,3 +21,13 @@ COPY src/ .
 EXPOSE 8001
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]
+
+# services/sentiment-analysis/requirements.txt
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+torch==2.1.0
+transformers==4.35.0
+vaderSentiment==3.3.2
+textblob==0.17.1
+numpy==1.24.3
