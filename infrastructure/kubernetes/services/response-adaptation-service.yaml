@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: response-adaptation-service
+  namespace: sentiment-drift
+  labels:
+    app: response-adaptation
+    component: microservice
+spec:
+  selector:
+    app: response-adaptation
+  ports:
+  - name: http
+    port: 8004
+    targetPort: 8004
+    protocol: TCP
+  type: ClusterIP
