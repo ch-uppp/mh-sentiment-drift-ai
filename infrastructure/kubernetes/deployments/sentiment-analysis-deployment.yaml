@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sentiment-analysis-deployment
+  namespace: sentiment-drift
+  labels:
+    app: sentiment-analysis
+    component: microservice
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: sentiment-analysis
+  template:
+    metadata:
+      labels:
+        app: sentiment-analysis
+        component: microservice
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "8001"
+    spec:
+      containers:
+      - name: sentiment-analysis
+        image: sentiment-drift/sentiment-analysis:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8001
+          name: http
+        env:
+        - name: SERVICE_NAME
+          value: "sentiment-analysis"
+        - name: PORT
+          value: "8001"
+        - name: DEBUG
+          value: "false"
+        - name: LOG_LEVEL
+          value: "INFO"
+        envFrom:
+        - configMapRef:
+            name: app-config
+        - secretRef:
+            name: api-secrets
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          successThreshold: 1
+          failureThreshold: 3
+        volumeMounts:
+        - name: model-cache
+          mountPath: /app/models
+      volumes:
+      - name: model-cache
+        emptyDir:
+          sizeLimit: 2Gi
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sentiment-analysis-metrics
+  namespace: sentiment-drift
+  labels:
+    app: sentiment-analysis
+    component: metrics
+spec:
+  selector:
+    app: sentiment-analysis
+  ports:
+  - name: metrics
+    port: 8001
+    targetPort: 8001
+    protocol: TCP
+  type: ClusterIP
